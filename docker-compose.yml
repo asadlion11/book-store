@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  bookdb:
+    image: mysql
+    container_name: bookdb
+    environment:
+      MYSQL_ROOT_PASSWORD: asad
+      MYSQL_DATABASE: bookstore
+      MYSQL_USER: asad
+      MYSQL_PASSWORD: asad
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - booknetwork
+
+  bookbackcont:
+    image: bookbackimg
+    container_name: bookbackcont
+    ports:
+      - "5000:5000"
+    depends_on:
+      - bookdb
+    networks:
+      - booknetwork
+    # Your backend code should connect to MySQL using "bookdb" as the host.
+
+  bookfrontcont:
+    image: bookfrontimg
+    container_name: bookfrontcont
+    ports:
+      - "3000:3000"
+    depends_on:
+      - bookbackcont
+    networks:
+      - booknetwork
+
+volumes:
+  mysql_data:
+
+networks:
+  booknetwork:
+    driver: bridge
