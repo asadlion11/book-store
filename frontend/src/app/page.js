@@ -139,6 +139,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "react-hot-toast";
 
 export default function Home() {
   const [books, setBooks] = useState([]);
@@ -146,14 +147,14 @@ export default function Home() {
   const [shelfNo, setShelfNo] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/books") // Backend endpoint
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/books`) // Backend endpoint
       .then((res) => res.json())
       .then((data) => setBooks(data))
       .catch((err) => console.error(err));
   }, []);
 
   const addBook = async () => {
-    await fetch("http://localhost:5000/add-book", {
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/add-book`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ bookName, shelfNo }), 
@@ -161,6 +162,7 @@ export default function Home() {
     setBooks([...books, { bookName, shelfNo }]);
     setBookName("");
     setShelfNo("");
+    toast.success("Book added successfully!");
   };
 
   return (

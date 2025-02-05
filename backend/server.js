@@ -1,20 +1,27 @@
 import express from 'express';
 import mysql from 'mysql2';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+dotenv.config()
+// // Database connection
+// const db = mysql.createConnection({
+//   host: 'host.docker.internal', // Host system hostname
+//   // host: '172.17.159.254', originally locally
+//   //host: 'bookdb', // Use the MySQL container name instead of an IP address not worked
+//   port: 3306,             
+//   user: 'asad',           
+//   password: 'asad',       
+//   database: 'bookstore' 
+// });
 
-// Database connection
+//Railway DB
 const db = mysql.createConnection({
-  host: 'host.docker.internal', // Host system hostname
-  // host: '172.17.159.254', originally locally
-  //host: 'bookdb', // Use the MySQL container name instead of an IP address not worked
-  port: 3306,             
-  user: 'asad',           
-  password: 'asad',       
-  database: 'bookstore' 
+  uri: process.env.MYSQL_PUBLIC_URL
 });
 
 // Connect to MySQL
@@ -51,3 +58,4 @@ app.post('/add-book', (req, res) => {
 app.listen(5000, () => {
   console.log('Backend running on port 5000');
 });
+
