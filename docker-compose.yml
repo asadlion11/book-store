@@ -1,43 +1,95 @@
-version: "3.8"
+# version: "3.8"
+
+# services:
+#   bookdb:
+#     image: mysql
+#     container_name: bookdb
+#     environment:
+#       MYSQL_ROOT_PASSWORD: asad
+#       MYSQL_DATABASE: bookstore
+#       MYSQL_USER: asad
+#       MYSQL_PASSWORD: asad
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+#     networks:
+#       - booknetwork
+
+#   bookbackcont:
+#     image: bookbackimg
+#     container_name: bookbackcont
+#     ports:
+#       - "5000:5000"
+#     depends_on:
+#       - bookdb
+#     networks:
+#       - booknetwork
+#     # Your backend code should connect to MySQL using "bookdb" as the host.
+
+#   bookfrontcont:
+#     image: bookfrontimg
+#     container_name: bookfrontcont
+#     ports:
+#       - "3000:3000"
+#     depends_on:
+#       - bookbackcont
+#     networks:
+#       - booknetwork
+
+# volumes:
+#   mysql_data:
+
+# networks:
+#   booknetwork:
+#     driver: bridge
+
+
+# from local db to Railway db and images will from docker hub
+version: '3.8'
 
 services:
-  bookdb:
-    image: mysql
-    container_name: bookdb
-    environment:
-      MYSQL_ROOT_PASSWORD: asad
-      MYSQL_DATABASE: bookstore
-      MYSQL_USER: asad
-      MYSQL_PASSWORD: asad
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - booknetwork
-
-  bookbackcont:
-    image: bookbackimg
-    container_name: bookbackcont
-    ports:
-      - "5000:5000"
-    depends_on:
-      - bookdb
-    networks:
-      - booknetwork
-    # Your backend code should connect to MySQL using "bookdb" as the host.
-
-  bookfrontcont:
-    image: bookfrontimg
-    container_name: bookfrontcont
+  frontend:
+    image: asadlion/book-frontend:v2
     ports:
       - "3000:3000"
+    environment:
+      - API_URL=https://keyd-backend.vercel.app 
     depends_on:
-      - bookbackcont
+      - backend
     networks:
-      - booknetwork
+      - book-network
+
+  backend:
+    image: asadlion/book-backend:v2
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=junction.proxy.rlwy.net
+      - DB_PORT=14665
+      - DB_USER=root
+      - DB_PASSWORD=pWSdFOolJJHONgLTaPTxhWlaRbEWXALy
+      - DB_DATABASE=railway
+    depends_on:
+      - db
+    networks:
+      - book-network
+
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: pWSdFOolJJHONgLTaPTxhWlaRbEWXALy
+      MYSQL_DATABASE: railway
+      MYSQL_USER: root
+      MYSQL_PASSWORD: pWSdFOolJJHONgLTaPTxhWlaRbEWXALy
+    ports:
+      - "3306:3306"
+    volumes:
+      - book-data:/var/lib/mysql
+    networks:
+      - book-network
 
 volumes:
-  mysql_data:
+  book-data:
 
 networks:
-  booknetwork:
-    driver: bridge
+  book-network:
