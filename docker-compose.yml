@@ -44,7 +44,7 @@
 
 
 # from local db to Railway db and images will from docker hub
-version: '3.8'
+version: "3.8"
 
 services:
   frontend:
@@ -52,7 +52,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_URL=https://keyd-backend.vercel.app 
+      - API_URL=https://keyd-backend.vercel.app
     depends_on:
       - backend
     networks:
@@ -63,11 +63,11 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - DB_HOST=junction.proxy.rlwy.net
-      - DB_PORT=14665
-      - DB_USER=root
-      - DB_PASSWORD=pWSdFOolJJHONgLTaPTxhWlaRbEWXALy
-      - DB_DATABASE=railway
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
     depends_on:
       - db
     networks:
@@ -77,12 +77,13 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: pWSdFOolJJHONgLTaPTxhWlaRbEWXALy
-      MYSQL_DATABASE: railway
-      MYSQL_USER: root
-      MYSQL_PASSWORD: pWSdFOolJJHONgLTaPTxhWlaRbEWXALy
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:3306"
     volumes:
       - book-data:/var/lib/mysql
     networks:
